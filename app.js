@@ -27,20 +27,19 @@ app.use(Auth);
 
 const typeDefs = await readFile('./graphql/schema.graphql', 'utf-8');
 
-app.use((error, req, res, next) => {
-  console.log(error);
-  const status = error.statusCode || 500;
-  const message = error.message;
-  const data = error.data;
-  res.status(status).json({ message: message, data: data });
-});
-
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 const apolloServer = new ApolloServer({ schema });
 await apolloServer.start();
 app.use('/graphql', apolloExpress(apolloServer, { context: getHttpContext }));
 const DBURL = process.env.DB_URL;
 
+app.use((error, req, res, next) => {
+  const status = error.statusCode || 500;
+  const message = error.message;
+  const data = error.data;
+  console.log(message);
+  res.status(status).json({ message: message, data: data });
+});
 mongoose
   .connect(DBURL)
   .then((result) => {
