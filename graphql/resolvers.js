@@ -2,9 +2,22 @@ import User from '../model/user.js';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import { GraphQLError } from 'graphql';
+dotenv.config();
+
 export const resolvers = {
   Query: {
-    test: (_root, { testing }) => {
+    test: (_root, { testing }, req) => {
+      console.log(req);
+      if (!req.isAuth) {
+        const response = {
+          name: testing + ' not auth',
+          age: 28,
+          lat: 0.11,
+        };
+        return response;
+      }
       const response = {
         name: testing,
         age: 28,
@@ -13,28 +26,33 @@ export const resolvers = {
       return response;
     },
     login: async function (_root, { email, password }) {
-      // const user = await User.findOne({ email: email });
-      // if (!user) {
-      //   const error = new Error('User not found.');
-      //   error.code = 401;
-      //   throw error;
-      // }
-      // const isEqual = await bcrypt.compare(password, user.password);
-      // if (!isEqual) {
-      //   const error = new Error('Password is incorrect.');
-      //   error.code = 401;
-      //   throw error;
-      // }
-      // const token = jwt.sign(
-      //   {
-      //     userId: user._id.toString(),
-      //     email: user.email,
-      //   },
-      //   'somesupersecretsecret',
-      //   { expiresIn: '1h' }
-      // );
-      // return { token: token, userId: user._id.toString() };
-      return { token: email, userId: password };
+      const user = await User.findOne({ email: email });
+      if (!user) {
+        throw new Error('allUsers query failed');
+        // throw new GraphQLError('You are not authorized to perform this action.', {
+        //   extensions: {
+        //     code: 401,
+        //   },
+        // });
+        // const error = new Error('User not found.');
+        // error.code = 401;
+        // throw error;
+      }
+      const isEqual = await bcrypt.compare(password, user.password);
+      if (!isEqual) {
+        const error = new Error('Password is incorrect.');
+        error.code = 401;
+        throw error;
+      }
+      const token = jwt.sign(
+        {
+          userId: user._id.toString(),
+          email: user.email,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '3h' }
+      );
+      return { token: `Barear ${token}`, userId: user._id.toString() };
     },
   },
   Mutation: {
@@ -50,8 +68,10 @@ export const resolvers = {
         const error = new Error('Invalid input.');
         error.data = errors;
         error.code = 422;
-        console.log(error);
-        throw error;
+        throw new GraphQLError(errors, {
+          extensions: { code: 'YOUR_ERROR_CODE', myCustomExtensions },
+        });
+        // throw error;
       }
       const existingUser = await User.findOne({ email: userInput.email });
       if (existingUser) {

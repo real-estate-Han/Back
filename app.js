@@ -9,15 +9,30 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import { resolvers } from './graphql/resolvers.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import fs from 'fs';
+import jwt from 'jsonwebtoken';
 import { Auth } from './middleware/auth.js';
 dotenv.config();
 const app = express();
-function getHttpContext({ req }) {
-  if (req.auth) {
-    return { userId: req.auth.sub };
+function getHttpContext({ req, res, next }) {
+  const authHeader = req.get('Authorization');
+  if (!authHeader) {
+    return { isAuth: false };
   }
-  return {};
+  const token = authHeader.split(' ')[1];
+
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (err) {
+    return { isAuth: false };
+  }
+  if (!decodedToken) {
+    req.isAuth = false;
+    return { isAuth: false };
+  }
+  req.userId = decodedToken.userId;
+  req.isAuth = true;
+  return { userId: decodedToken.userId, isAuth: true };
 }
 
 app.use(cors());
