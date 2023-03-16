@@ -9,12 +9,33 @@ type User {
 
 type Post {
   _id: ID!
-  title: String!
-  content: String!
-  imageUrl: String!
-  creator: User!
-  createdAt: String!
-  updatedAt: String!
+  itemUniqueID: Number!
+  itemAddress: String!
+  itemGeoLocation: [Number!]!
+  itemType: String
+  itemDeposit: Number
+  itemMonthly: Number
+  itemJense: Number
+  itemSale: Number
+  itemManagement: Number
+  itemAreaLand: Number
+  itemAreaBuilding: Number
+  itemFloor: Number
+  itemPurpose: String
+  itemRooms: String
+  itemStatus: String
+  itemField: String
+  itemMovein: String
+  itemApproval: String
+  itemSubway: String
+  itemTitleimg: String
+  itemDetailimg: [String]
+  itemTag: [String]
+  itemElectricity: Number
+  itemOption: [String]
+  creator: User
+  createdAt: String
+  updatedAt: String
 }
 
 type AuthData {
@@ -34,9 +55,30 @@ input UserInputData {
 }
 
 input PostInputData {
-  title: String!
-  content: String!
-  imageUrl: String!
+  itemUniqueID: Number!
+  itemAddress: String!
+  itemGeoLocation: [Number!]!
+  itemType: String!
+  itemDeposit: Number
+  itemMonthly: Number
+  itemJense: Number
+  itemSale: Number
+  itemManagement: Number
+  itemAreaLand: Number
+  itemAreaBuilding: Number
+  itemFloor: Number
+  itemPurpose: String
+  itemRooms: String
+  itemStatus: String
+  itemField: String
+  itemMovein: String
+  itemApproval: String
+  itemSubway: String
+  itemTitleimg: String
+  itemDetailimg: [String]
+  itemTag: [String]
+  itemElectricity: Number
+  itemOption: [String]
 }
 
 type testdata {
