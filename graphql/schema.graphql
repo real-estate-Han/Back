@@ -84,7 +84,7 @@ input PostInputData {
 
 
 type Query {
-  allpost(): PostData!
+  allpost: PostData!
   login(email: String!, password: String!): AuthData!
   posts(page: Int): PostData!
   post(id: ID!): Post!
