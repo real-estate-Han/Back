@@ -38,8 +38,6 @@ function getHttpContext({ req, res, next }) {
 app.use(cors());
 app.use(bodyParser.json()); // application/json
 
-app.use(Auth);
-
 const typeDefs = await readFile('./graphql/schema.graphql', 'utf-8');
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });

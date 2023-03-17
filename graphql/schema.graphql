@@ -9,18 +9,18 @@ type User {
 
 type Post {
   _id: ID!
-  itemUniqueID: Number!
+  itemUniqueID: Int!
   itemAddress: String!
-  itemGeoLocation: [Number!]!
+  itemGeoLocation: [Float!]!
   itemType: String
-  itemDeposit: Number
-  itemMonthly: Number
-  itemJense: Number
-  itemSale: Number
-  itemManagement: Number
-  itemAreaLand: Number
-  itemAreaBuilding: Number
-  itemFloor: Number
+  itemDeposit: Int
+  itemMonthly: Int
+  itemJense: Int
+  itemSale: Int
+  itemManagement: Int
+  itemAreaLand: Int
+  itemAreaBuilding: Int
+  itemFloor: Int
   itemPurpose: String
   itemRooms: String
   itemStatus: String
@@ -31,7 +31,7 @@ type Post {
   itemTitleimg: String
   itemDetailimg: [String]
   itemTag: [String]
-  itemElectricity: Number
+  itemElectricity: Int
   itemOption: [String]
   creator: User
   createdAt: String
@@ -55,18 +55,18 @@ input UserInputData {
 }
 
 input PostInputData {
-  itemUniqueID: Number!
+  itemUniqueID: Int!
   itemAddress: String!
-  itemGeoLocation: [Number!]!
+  itemGeoLocation: [Float!]!
   itemType: String!
-  itemDeposit: Number
-  itemMonthly: Number
-  itemJense: Number
-  itemSale: Number
-  itemManagement: Number
-  itemAreaLand: Number
-  itemAreaBuilding: Number
-  itemFloor: Number
+  itemDeposit: Int
+  itemMonthly: Int
+  itemJense: Int
+  itemSale: Int
+  itemManagement: Int
+  itemAreaLand: Int
+  itemAreaBuilding: Int
+  itemFloor: Int
   itemPurpose: String
   itemRooms: String
   itemStatus: String
@@ -77,18 +77,14 @@ input PostInputData {
   itemTitleimg: String
   itemDetailimg: [String]
   itemTag: [String]
-  itemElectricity: Number
+  itemElectricity: Int
   itemOption: [String]
 }
 
-type testdata {
-  name: String!
-  age: Int
-  lat: Float
-}
+
 
 type Query {
-  test(testing: String!): testdata!
+  allpost(): PostData!
   login(email: String!, password: String!): AuthData!
   posts(page: Int): PostData!
   post(id: ID!): Post!

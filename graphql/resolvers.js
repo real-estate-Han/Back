@@ -8,27 +8,14 @@ dotenv.config();
 
 export const resolvers = {
   Query: {
-    test: (_root, { testing }, req) => {
-      console.log(req);
-      if (!req.isAuth) {
-        const response = {
-          name: testing + ' not auth',
-          age: 28,
-          lat: 0.11,
-        };
-        return response;
-      }
-      const response = {
-        name: testing,
-        age: 28,
-        lat: 0.11,
-      };
-      return response;
+    allpost: async (_root, {}, req) => {
+      const posts = await Post.find();
+      return posts;
     },
     login: async function (_root, { email, password }) {
       const user = await User.findOne({ email: email });
       if (!user) {
-        throw new GraphQLError('You are not authorized to perform this action.', {
+        throw new GraphQLError('회원을 찾을 수 없습니다', {
           extensions: {
             code: 401,
           },
@@ -36,9 +23,7 @@ export const resolvers = {
       }
       const isEqual = await bcrypt.compare(password, user.password);
       if (!isEqual) {
-        const error = new Error('Password is incorrect.');
-        error.code = 401;
-        throw error;
+        throw new GraphQLError('비밀번호가 틀렸습니다');
       }
       const token = jwt.sign(
         {
@@ -51,7 +36,7 @@ export const resolvers = {
       return { token: `Barear ${token}`, userId: user._id.toString() };
     },
 
-    posts: async function (_root, { page }, req) {
+    posts: async (_root, { page }, req) => {
       if (!req.isAuth) {
         throw new GraphQLError('Not authenticated!');
       }
@@ -78,7 +63,7 @@ export const resolvers = {
       };
     },
 
-    post: async function (_root, { id }, req) {
+    post: async (_root, { id }, req) => {
       if (!req.isAuth) {
         throw new GraphQLError('Not authenticated!', {
           extensions: {
@@ -101,53 +86,14 @@ export const resolvers = {
         updatedAt: post.updatedAt.toISOString(),
       };
     },
-    deletePost: async function (_root, { id }, req) {
-      if (!req.isAuth) {
-        const error = new Error('Not authenticated!');
-        error.code = 401;
-        throw error;
-      }
-      const post = await Post.findById(id);
-      if (!post) {
-        const error = new Error('No post found!');
-        error.code = 404;
-        throw error;
-      }
-      if (post.creator.toString() !== req.userId.toString()) {
-        const error = new Error('Not authorized!');
-        error.code = 403;
-        throw error;
-      }
-      clearImage(post.imageUrl);
-      await Post.findByIdAndRemove(id);
-      const user = await User.findById(req.userId);
-      user.posts.pull(id);
-      await user.save();
-      return true;
-    },
   },
   Mutation: {
-    createUser: async function (_root, { userInput }) {
+    createUser: async (_root, { userInput }) => {
       const errors = [];
-      if (!validator.isEmail(userInput.email)) {
-        errors.push({ message: 'E-Mail is invalid.' });
-      }
-      if (validator.isEmpty(userInput.password) || !validator.isLength(userInput.password, { min: 5 })) {
-        errors.push({ message: 'Password too short!' });
-      }
-      if (errors.length > 0) {
-        const error = new Error('Invalid input.');
-        error.data = errors;
-        error.code = 422;
-        throw new GraphQLError(errors, {
-          extensions: { code: 'YOUR_ERROR_CODE', myCustomExtensions },
-        });
-        // throw error;
-      }
+
       const existingUser = await User.findOne({ email: userInput.email });
       if (existingUser) {
-        const error = new Error('User exists already!');
-        throw error;
+        throw new GraphQLError('이미 존재하는 회원입니다');
       }
       const hashedPw = await bcrypt.hash(userInput.password, 12);
       const user = new User({
@@ -157,6 +103,76 @@ export const resolvers = {
       });
       const createdUser = await user.save();
       return { ...createdUser._doc, _id: createdUser._id.toString() };
+    },
+
+    createPost: async ({ postInput }, req) => {
+      if (!req.isAuth) {
+        throw new GraphQLError('인증 실패');
+      }
+
+      const user = await User.findById(req.userId);
+      if (!user) {
+        throw new GraphQLError('회원을 찾을 수 없습니다');
+      }
+      const post = new Post({ ...postInput, creator: user });
+      const createdPost = await post.save();
+      user.posts.push(createdPost);
+      await user.save();
+      return {
+        ...createdPost._doc,
+        _id: createdPost._id.toString(),
+        createdAt: createdPost.createdAt.toISOString(),
+        updatedAt: createdPost.updatedAt.toISOString(),
+      };
+    },
+
+    deletePost: async (_root, { id }, req) => {
+      if (!req.isAuth) {
+        throw new GraphQLError('인증 실패');
+      }
+      const post = await Post.findById(id);
+      if (!post) {
+        throw new GraphQLError('해당 게시물을 찾을 수 없습니다');
+      }
+      // if (post.creator.toString() !== req.userId.toString()) {
+      //   throw new GraphQLError('Not authorized!');
+      //   error.code = 403;
+      //   throw error;
+      // }
+
+      await Post.findByIdAndRemove(id);
+      const user = await User.findById(req.userId);
+      user.posts.pull(id);
+      await user.save();
+      return true;
+    },
+    updatePost: async ({ id, postInput }, req) => {
+      if (!req.isAuth) {
+        throw new GraphQLError('인증 실패');
+      }
+      const post = await Post.findById(id).populate('creator');
+      if (!post) {
+        throw new GraphQLError('게시물을 찾을 수 없습니다');
+        error.code = 404;
+        throw error;
+      }
+      if (post.creator._id.toString() !== req.userId.toString()) {
+        const error = new Error('Not authorized!');
+        error.code = 403;
+        throw error;
+      }
+
+      post = { ...postInput, creator: post.creator };
+      if (postInput.imageUrl !== 'undefined') {
+        post.imageUrl = postInput.imageUrl;
+      }
+      const updatedPost = await post.save();
+      return {
+        ...updatedPost._doc,
+        _id: updatedPost._id.toString(),
+        createdAt: updatedPost.createdAt.toISOString(),
+        updatedAt: updatedPost.updatedAt.toISOString(),
+      };
     },
   },
 };
