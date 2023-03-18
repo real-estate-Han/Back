@@ -1,9 +1,9 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const postSchema = new Schema(
   {
-    itemUniqueID: { type: number, required: true },
+    itemUniqueID: { type: Number, required: true },
     itemAddress: { type: String, required: true },
     itemGeoLocation: [{ type: Number, required: true }],
     itemType: { type: String, required: true },
@@ -30,11 +30,12 @@ const postSchema = new Schema(
 
     creator: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
   },
   { timestamps: true }
 );
 
-export const Post = mongoose.model('Post', postSchema);
+const Post = mongoose.model("Post", postSchema);
+export default Post;

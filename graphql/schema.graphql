@@ -97,7 +97,7 @@ type Query {
 type Mutation {
   createUser(userInput: UserInputData): User!
   createPost(postInput: PostInputData, geo: Geo): Post!
-  updatePost(id: ID!, postInput: PostInputData): Post!
+  updatePost(id: ID!, postInput: PostInputData, geo: Geo): Post!
   deletePost(id: ID!): Boolean
   updateStatus(status: String!): User!
 }

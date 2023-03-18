@@ -1,4 +1,5 @@
 import User from "../model/user.js";
+import Post from "../model/post.js";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -105,21 +106,29 @@ export const resolvers = {
       return { ...createdUser._doc, _id: createdUser._id.toString() };
     },
 
-    createPost: async ({ postInput, geo }, req) => {
+    createPost: async (_root, { postInput, geo }, req) => {
       if (!req.isAuth) {
         throw new GraphQLError("인증 실패");
       }
-
+      console.log(geo);
       const user = await User.findById(req.userId);
       if (!user) {
         throw new GraphQLError("회원을 찾을 수 없습니다");
       }
-      const post = new Post({ ...postInput, geo, creator: user });
+      const post = new Post({
+        ...postInput,
+        itemGeoLocation: [geo.lat, geo.lng],
+        creator: user,
+      });
       const createdPost = await post.save();
       user.posts.push(createdPost);
       await user.save();
       return {
         ...createdPost._doc,
+        itemGeoLocation: {
+          lat: createdPost.itemGeoLocation[0],
+          lng: createdPost.itemGeoLocation[1],
+        },
         _id: createdPost._id.toString(),
         createdAt: createdPost.createdAt.toISOString(),
         updatedAt: createdPost.updatedAt.toISOString(),
@@ -146,7 +155,7 @@ export const resolvers = {
       await user.save();
       return true;
     },
-    updatePost: async ({ id, postInput }, req) => {
+    updatePost: async (_root, { id, postInput, geo }, req) => {
       if (!req.isAuth) {
         throw new GraphQLError("인증 실패");
       }
@@ -162,14 +171,19 @@ export const resolvers = {
         throw error;
       }
 
-      post = { ...postInput, creator: post.creator };
-      if (postInput.imageUrl !== "undefined") {
-        post.imageUrl = postInput.imageUrl;
-      }
+      post = {
+        ...postInput,
+        itemGeoLocation: [geo.lat, geo.lng],
+        creator: post.creator,
+      };
       const updatedPost = await post.save();
       return {
         ...updatedPost._doc,
         _id: updatedPost._id.toString(),
+        itemGeoLocation: {
+          lat: updatedPost.itemGeoLocation[0],
+          lng: updatedPost.itemGeoLocation[1],
+        },
         createdAt: updatedPost.createdAt.toISOString(),
         updatedAt: updatedPost.updatedAt.toISOString(),
       };
