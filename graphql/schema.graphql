@@ -11,7 +11,7 @@ type Post {
   _id: ID!
   itemUniqueID: Int!
   itemAddress: String!
-  itemGeoLocation: [Float!]!
+  itemGeoLocation: GeoLocation!
   itemType: String
   itemDeposit: Int
   itemMonthly: Int
@@ -54,13 +54,16 @@ input UserInputData {
   password: String!
 }
 type GeoLocation {
-  lat: Float!
-  lng: Float!
+  lat: Float
+  lng: Float
+}
+input Geo {
+  lat: Float
+  lng: Float
 }
 input PostInputData {
   itemUniqueID: Int!
   itemAddress: String!
-  itemGeoLocation: GeoLocation!
   itemType: String!
   itemDeposit: Int
   itemMonthly: Int
@@ -93,7 +96,7 @@ type Query {
 
 type Mutation {
   createUser(userInput: UserInputData): User!
-  createPost(postInput: PostInputData): Post!
+  createPost(postInput: PostInputData, geo: Geo): Post!
   updatePost(id: ID!, postInput: PostInputData): Post!
   deletePost(id: ID!): Boolean
   updateStatus(status: String!): User!

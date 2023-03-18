@@ -105,7 +105,7 @@ export const resolvers = {
       return { ...createdUser._doc, _id: createdUser._id.toString() };
     },
 
-    createPost: async ({ postInput }, req) => {
+    createPost: async ({ postInput, geo }, req) => {
       if (!req.isAuth) {
         throw new GraphQLError("인증 실패");
       }
@@ -114,7 +114,7 @@ export const resolvers = {
       if (!user) {
         throw new GraphQLError("회원을 찾을 수 없습니다");
       }
-      const post = new Post({ ...postInput, creator: user });
+      const post = new Post({ ...postInput, geo, creator: user });
       const createdPost = await post.save();
       user.posts.push(createdPost);
       await user.save();
