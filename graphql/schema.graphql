@@ -53,11 +53,14 @@ input UserInputData {
   name: String!
   password: String!
 }
-
+type GeoLocation {
+  lat: Float!
+  lng: Float!
+}
 input PostInputData {
   itemUniqueID: Int!
   itemAddress: String!
-  itemGeoLocation: [Float!]!
+  itemGeoLocation: GeoLocation!
   itemType: String!
   itemDeposit: Int
   itemMonthly: Int
@@ -81,10 +84,8 @@ input PostInputData {
   itemOption: [String]
 }
 
-
-
 type Query {
-  allpost(): PostData!
+  allpost: PostData!
   login(email: String!, password: String!): AuthData!
   posts(page: Int): PostData!
   post(id: ID!): Post!
