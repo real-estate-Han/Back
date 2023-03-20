@@ -11,7 +11,22 @@ export const resolvers = {
   Query: {
     allpost: async function (_root, {}, req) {
       const posts = await Post.find();
-      return posts;
+      const totalPosts = await Post.find().countDocuments();
+      return {
+        posts: posts.map(p => {
+          return {
+            ...p._doc,
+            _id: p._id.toString(),
+            itemGeoLocation: {
+              lat: p.itemGeoLocation[0],
+              lng: p.itemGeoLocation[1],
+            },
+            createdAt: p.createdAt.toISOString(),
+            updatedAt: p.updatedAt.toISOString(),
+          };
+        }),
+        totalPosts: totalPosts,
+      };
     },
     login: async function (_root, { email, password }) {
       const user = await User.findOne({ email: email });
@@ -56,6 +71,10 @@ export const resolvers = {
           return {
             ...p._doc,
             _id: p._id.toString(),
+            itemGeoLocation: {
+              lat: p.itemGeoLocation[0],
+              lng: p.itemGeoLocation[1],
+            },
             createdAt: p.createdAt.toISOString(),
             updatedAt: p.updatedAt.toISOString(),
           };
@@ -83,6 +102,10 @@ export const resolvers = {
       return {
         ...post._doc,
         _id: post._id.toString(),
+        itemGeoLocation: {
+          lat: post.itemGeoLocation[0],
+          lng: post.itemGeoLocation[1],
+        },
         createdAt: post.createdAt.toISOString(),
         updatedAt: post.updatedAt.toISOString(),
       };
