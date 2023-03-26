@@ -84,13 +84,6 @@ export const resolvers = {
     },
 
     post: async (_root, { id }, req) => {
-      if (!req.isAuth) {
-        throw new GraphQLError("Not authenticated!", {
-          extensions: {
-            code: 401,
-          },
-        });
-      }
       const post = await Post.findById(id).populate("creator");
       if (!post) {
         throw new GraphQLError("No post found!", {

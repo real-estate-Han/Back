@@ -16,7 +16,7 @@ const app = express();
 app.use(cors({ origin: ["http://localhost:3000"], credentials: true }));
 app.use(bodyParser.json()); // application/json
 function getHttpContext({ req, res, next }) {
-  const authHeader = req.get("Authorization");
+  const authHeader = req.get("authorization");
   if (!authHeader) {
     return { isAuth: false };
   }
