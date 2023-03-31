@@ -35,6 +35,7 @@ type Post {
   itemStatus: String #// 용도지역
   itemTruck: String #// 화물차량 진입가능여부
   itemLandNumber: String #// 필지수
+  itemAreaTotal: Float #// 총면적
   itemLandCategory: String #// 지목
   itemTotalAreaLand: Float #// 총대지면적
   itemMovein: String #// 입주가능일
