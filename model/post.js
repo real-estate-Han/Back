@@ -26,7 +26,7 @@ const postSchema = new Schema(
     itemDetailimg: [{ type: String }],
     itemTag: [{ type: String }],
     itemElectricity: { type: Number },
-    itemOption: [{ type: String }],
+    itemOption: { type: String },
 
     creator: {
       type: Schema.Types.ObjectId,
