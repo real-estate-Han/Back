@@ -28,12 +28,13 @@ type Post {
   itemSupplyArea: Float #// 공급면적
   itemExclusiveArea: Float #// 전용면적
   itemFloor: Int #// 층수
+  itemLandType: String #// 지목
   itemFloorHeight: Int #// 층고
   itemPurpose: String #// 용도
   itemRooms: String #// 방수
   itemStatus: String #// 용도지역
   itemTruck: String #// 화물차량 진입가능여부
-  itemField: String #// 필지수
+  itemLandNumber: String #// 필지수
   itemLandCategory: String #// 지목
   itemTotalAreaLand: Float #// 총대지면적
   itemMovein: String #// 입주가능일
@@ -91,12 +92,13 @@ input PostInputData {
   itemSupplyArea: Float #// 공급면적
   itemExclusiveArea: Float #// 전용면적
   itemFloor: Int #// 층수
+  itemLandType: String #// 지목
   itemFloorHeight: Int #// 층고
   itemPurpose: String #// 용도
   itemRooms: String #// 방수
   itemStatus: String #// 용도지역
   itemTruck: String #// 화물차량 진입가능여부
-  itemField: String #// 필지수
+  itemLandNumber: String #// 필지수
   itemLandCategory: String #// 지목
   itemTotalAreaLand: Float #// 토지합계면적
   itemMovein: String #// 입주가능일
