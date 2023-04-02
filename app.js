@@ -13,7 +13,7 @@ import jwt from "jsonwebtoken";
 import { Auth } from "./middleware/auth.js";
 dotenv.config();
 const app = express();
-app.use(cors({ origin: ["*"], credentials: true }));
+app.use(cors());
 app.use(bodyParser.json()); // application/json
 function getHttpContext({ req, res, next }) {
   const authHeader = req.get("authorization");
