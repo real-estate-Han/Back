@@ -4,7 +4,11 @@ const Schema = mongoose.Schema;
 const postSchema = new Schema(
   {
     itemUniqueID: { type: Number, required: true },
+    itemLoadAddress: { type: String, required: true },
     itemAddress: { type: String, required: true },
+    region_1depth: { type: String },
+    region_2depth: { type: String },
+    region_3depth: { type: String },
     itemGeoLocation: [{ type: Number, required: true }],
     itemType: { type: String, required: true },
     itemDeposit: { type: Number },

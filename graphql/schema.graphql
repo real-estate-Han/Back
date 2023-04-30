@@ -11,7 +11,11 @@ type Post {
   _id: ID!
   itemGeoLocation: GeoLocation
   itemUniqueID: Int!
-  itemAddress: String! #// 주소
+  itemLoadAddress: String! #// 도로명주소
+  itemAddress: String! #// 지번주소
+  region_1depth: String #// 경기도
+  region_2depth: String #// 파주시
+  region_3depth: String # // 무슨동
   itemType: String! #// 매물타입
   itemDeposit: Int #// 보증금
   itemMonthly: Int #// 월세가
