@@ -1,10 +1,11 @@
-import User from "../model/user.js";
-import Post from "../model/post.js";
-import validator from "validator";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-import { GraphQLError } from "graphql";
+import User from '../model/user.js';
+import Post from '../model/post.js';
+import validator from 'validator';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import { GraphQLError } from 'graphql';
+import { mongo } from 'mongoose';
 dotenv.config();
 
 export const resolvers = {
@@ -13,7 +14,7 @@ export const resolvers = {
       const posts = await Post.find();
       const totalPosts = await Post.find().countDocuments();
       return {
-        posts: posts.map(p => {
+        posts: posts.map((p) => {
           return {
             ...p._doc,
             _id: p._id.toString(),
@@ -31,7 +32,7 @@ export const resolvers = {
     login: async function (_root, { email, password }) {
       const user = await User.findOne({ email: email });
       if (!user) {
-        throw new GraphQLError("회원을 찾을 수 없습니다", {
+        throw new GraphQLError('회원을 찾을 수 없습니다', {
           extensions: {
             code: 401,
           },
@@ -39,7 +40,7 @@ export const resolvers = {
       }
       const isEqual = await bcrypt.compare(password, user.password);
       if (!isEqual) {
-        throw new GraphQLError("비밀번호가 틀렸습니다");
+        throw new GraphQLError('비밀번호가 틀렸습니다');
       }
       const token = jwt.sign(
         {
@@ -47,14 +48,14 @@ export const resolvers = {
           email: user.email,
         },
         process.env.JWT_SECRET,
-        { expiresIn: "5h" }
+        { expiresIn: '5h' }
       );
-      return { token: `Barear ${token}`, userId: user._id.toString() };
+      return { token: `Barear ${token}`, userId: user._id.toString(), likeposts: user.likeposts };
     },
 
     posts: async (_root, { page }, req) => {
       if (!req.isAuth) {
-        throw new GraphQLError("Not authenticated!");
+        throw new GraphQLError('Not authenticated!');
       }
       if (!page) {
         page = 1;
@@ -65,9 +66,9 @@ export const resolvers = {
         .sort({ createdAt: -1 })
         .skip((page - 1) * perPage)
         .limit(perPage)
-        .populate("creator");
+        .populate('creator');
       return {
-        posts: posts.map(p => {
+        posts: posts.map((p) => {
           return {
             ...p._doc,
             _id: p._id.toString(),
@@ -84,9 +85,9 @@ export const resolvers = {
     },
 
     post: async (_root, { id }, req) => {
-      const post = await Post.findById(id).populate("creator");
+      const post = await Post.findById(id).populate('creator');
       if (!post) {
-        throw new GraphQLError("No post found!", {
+        throw new GraphQLError('No post found!', {
           extensions: {
             code: 401,
           },
@@ -110,7 +111,7 @@ export const resolvers = {
 
       const existingUser = await User.findOne({ email: userInput.email });
       if (existingUser) {
-        throw new GraphQLError("이미 존재하는 회원입니다");
+        throw new GraphQLError('이미 존재하는 회원입니다');
       }
       const hashedPw = await bcrypt.hash(userInput.password, 12);
       const user = new User({
@@ -124,12 +125,12 @@ export const resolvers = {
 
     createPost: async (_root, { postInput, geo }, req) => {
       if (!req.isAuth) {
-        throw new GraphQLError("인증 실패");
+        throw new GraphQLError('인증 실패');
       }
       console.log(geo);
       const user = await User.findById(req.userId);
       if (!user) {
-        throw new GraphQLError("회원을 찾을 수 없습니다");
+        throw new GraphQLError('회원을 찾을 수 없습니다');
       }
       const post = new Post({
         ...postInput,
@@ -153,11 +154,11 @@ export const resolvers = {
 
     deletePost: async (_root, { id }, req) => {
       if (!req.isAuth) {
-        throw new GraphQLError("인증 실패");
+        throw new GraphQLError('인증 실패');
       }
       const post = await Post.findById(id);
       if (!post) {
-        throw new GraphQLError("해당 게시물을 찾을 수 없습니다");
+        throw new GraphQLError('해당 게시물을 찾을 수 없습니다');
       }
       // if (post.creator.toString() !== req.userId.toString()) {
       //   throw new GraphQLError('Not authorized!');
@@ -173,16 +174,16 @@ export const resolvers = {
     },
     updatePost: async (_root, { id, postInput, geo }, req) => {
       if (!req.isAuth) {
-        throw new GraphQLError("인증 실패");
+        throw new GraphQLError('인증 실패');
       }
-      const post = await Post.findById(id).populate("creator");
+      const post = await Post.findById(id).populate('creator');
       if (!post) {
-        throw new GraphQLError("게시물을 찾을 수 없습니다");
+        throw new GraphQLError('게시물을 찾을 수 없습니다');
         error.code = 404;
         throw error;
       }
       if (post.creator._id.toString() !== req.userId.toString()) {
-        const error = new Error("Not authorized!");
+        const error = new Error('Not authorized!');
         error.code = 403;
         throw error;
       }
@@ -203,6 +204,33 @@ export const resolvers = {
         createdAt: updatedPost.createdAt.toISOString(),
         updatedAt: updatedPost.updatedAt.toISOString(),
       };
+    },
+    likePost: async (_root, { id }, req) => {
+      if (!req.isAuth) {
+        throw new GraphQLError('로그인이 필요합니다');
+      }
+      const post = await Post.findById(id).populate('creator');
+      if (post.creator._id.toString() !== req.userId.toString()) {
+        const error = new Error('Not authorized!');
+        error.code = 403;
+        throw error;
+      }
+      const user = await User.findById(req.userId);
+      const userlikelist = user.likeposts;
+
+      // const obID = mongoose.Types.ObjectId(id);
+      const includepost = userlikelist.includes(id);
+      if (includepost) {
+        user.likeposts.pull(id);
+        post.likeCount -= 1;
+      }
+      if (!includepost) {
+        user.likeposts.push(id);
+        post.likeCount += 1;
+      }
+      await user.save();
+      await post.save();
+      return true;
     },
   },
 };

@@ -17,6 +17,7 @@ type Post {
   region_2depth: String #// 파주시
   region_3depth: String # // 무슨동
   itemType: String! #// 매물타입
+  transactionType: String #// 거래타입
   itemDeposit: Int #// 보증금
   itemMonthly: Int #// 월세가
   itemJense: Int #// 전세가
@@ -35,7 +36,8 @@ type Post {
   itemLandType: String #// 지목
   itemFloorHeight: Int #// 층고
   itemPurpose: String #// 용도
-  itemRooms: String #// 방수
+  itemRooms: Number #// 방수
+  itemBathroom: Number
   itemStatus: String #// 용도지역
   itemTruck: String #// 화물차량 진입가능여부
   itemLandNumber: String #// 필지수
@@ -50,6 +52,13 @@ type Post {
   itemTag: [String]
   itemElectricity: Int
   itemOption: String
+  itemLoan: String
+  itemWaterMark: Boolean
+  itemMoreInfo: String
+  itemManagementInfo: String
+  itemManagementException: String
+  itemFavorCount: Number
+  itemSecurity: String
   creator: User
   createdAt: String
   updatedAt: String
@@ -58,6 +67,7 @@ type Post {
 type AuthData {
   token: String!
   userId: String!
+  likeposts: [String!]!
 }
 
 type PostData {
@@ -129,4 +139,5 @@ type Mutation {
   updatePost(id: ID!, postInput: PostInputData, geo: Geo): Post!
   deletePost(id: ID!): Boolean
   updateStatus(status: String!): User!
+  likePost(id: ID!): Boolean
 }
