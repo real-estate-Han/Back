@@ -217,8 +217,8 @@ export const resolvers = {
       if (!req.isAuth) {
         throw new GraphQLError('로그인이 필요합니다');
       }
-      const post = await Post.findById(id).populate('creator');
-
+      const post = await Post.findById(id);
+      console.log(post);
       const user = await User.findById(req.userId);
       const userlikelist = user.likeposts;
 
