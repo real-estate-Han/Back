@@ -10,6 +10,14 @@ dotenv.config();
 
 export const resolvers = {
   Query: {
+    checklogin: async function (_root, {}, req) {
+      if (!req.isAuth) {
+        return 'failed';
+      }
+      if (req.isAuth) {
+        return 'success';
+      }
+    },
     allpost: async function (_root, {}, req) {
       const posts = await Post.find();
       const totalPosts = await Post.find().countDocuments();

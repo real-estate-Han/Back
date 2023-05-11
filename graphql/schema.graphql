@@ -53,7 +53,7 @@ type Post {
   itemElectricity: Int
   itemOption: String
   itemLoan: String
-  itemWaterMark: Boolean
+  itemWaterMark: String
   itemMoreInfo: String
   itemManagementInfo: String
   itemManagementException: String
@@ -132,7 +132,7 @@ input PostInputData {
   itemElectricity: Int
   itemOption: String
   itemLoan: String
-  itemWaterMark: Boolean
+  itemWaterMark: String
   itemMoreInfo: String
   itemManagementInfo: String
   itemManagementException: String
@@ -145,6 +145,7 @@ type Query {
   login(email: String!, password: String!): AuthData!
   posts(page: Int): PostData!
   post(id: ID!): Post!
+  checklogin: String!
 }
 
 type Mutation {
