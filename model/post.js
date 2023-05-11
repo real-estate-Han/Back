@@ -47,7 +47,7 @@ const postSchema = new Schema(
     itemExclusiveArea: { type: Number },
     itemOption: { type: String },
     itemLoan: { type: String },
-    itemWaterMark: { type: Boolean },
+    itemWaterMark: { type: String },
     itemMoreInfo: { type: String },
     itemManagementInfo: { type: String },
     itemManagementException: { type: String },
