@@ -36,8 +36,8 @@ type Post {
   itemLandType: String #// 지목
   itemFloorHeight: Int #// 층고
   itemPurpose: String #// 용도
-  itemRooms: Number #// 방수
-  itemBathroom: Number
+  itemRooms: Int #// 방수
+  itemBathroom: Int
   itemStatus: String #// 용도지역
   itemTruck: String #// 화물차량 진입가능여부
   itemLandNumber: String #// 필지수
@@ -57,7 +57,7 @@ type Post {
   itemMoreInfo: String
   itemManagementInfo: String
   itemManagementException: String
-  itemFavorCount: Number
+  itemFavorCount: Int
   itemSecurity: String
   creator: User
   createdAt: String
