@@ -90,8 +90,13 @@ input Geo {
 }
 input PostInputData {
   itemUniqueID: Int!
-  itemAddress: String! #// 주소
+  itemLoadAddress: String! #// 도로명주소
+  itemAddress: String! #// 지번주소
+  region_1depth: String #// 경기도
+  region_2depth: String #// 파주시
+  region_3depth: String # // 무슨동
   itemType: String! #// 매물타입
+  transactionType: String #// 거래타입
   itemDeposit: Int #// 보증금
   itemMonthly: Int #// 월세가
   itemJense: Int #// 전세가
@@ -110,12 +115,14 @@ input PostInputData {
   itemLandType: String #// 지목
   itemFloorHeight: Int #// 층고
   itemPurpose: String #// 용도
-  itemRooms: String #// 방수
+  itemRooms: Int #// 방수
+  itemBathroom: Int
   itemStatus: String #// 용도지역
   itemTruck: String #// 화물차량 진입가능여부
   itemLandNumber: String #// 필지수
+  itemAreaTotal: Float #// 총면적
   itemLandCategory: String #// 지목
-  itemTotalAreaLand: Float #// 토지합계면적
+  itemTotalAreaLand: Float #// 총대지면적
   itemMovein: String #// 입주가능일
   itemApproval: String #// 사용승인일
   itemSubway: String
@@ -124,6 +131,13 @@ input PostInputData {
   itemTag: [String]
   itemElectricity: Int
   itemOption: String
+  itemLoan: String
+  itemWaterMark: Boolean
+  itemMoreInfo: String
+  itemManagementInfo: String
+  itemManagementException: String
+  itemFavorCount: Int
+  itemSecurity: String
 }
 
 type Query {

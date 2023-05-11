@@ -210,11 +210,7 @@ export const resolvers = {
         throw new GraphQLError('로그인이 필요합니다');
       }
       const post = await Post.findById(id).populate('creator');
-      if (post.creator._id.toString() !== req.userId.toString()) {
-        const error = new Error('Not authorized!');
-        error.code = 403;
-        throw error;
-      }
+
       const user = await User.findById(req.userId);
       const userlikelist = user.likeposts;
 
@@ -222,11 +218,11 @@ export const resolvers = {
       const includepost = userlikelist.includes(id);
       if (includepost) {
         user.likeposts.pull(id);
-        post.likeCount -= 1;
+        post.itemFavorCount -= 1;
       }
       if (!includepost) {
         user.likeposts.push(id);
-        post.likeCount += 1;
+        post.itemFavorCount += 1;
       }
       await user.save();
       await post.save();
