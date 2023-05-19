@@ -3,8 +3,9 @@ type User {
   name: String!
   email: String!
   password: String
-  status: String!
-  posts: [Post!]!
+  status: String
+  posts: [Post]!
+  likeposts: [Post]!
 }
 
 type Post {
@@ -67,7 +68,11 @@ type Post {
 type AuthData {
   token: String!
   userId: String!
-  likeposts: [String!]!
+  likeposts: [ID]!
+  posts: [ID]!
+  userEmail: String
+  userNickname: String
+  status: String
 }
 
 type PostData {
@@ -77,7 +82,7 @@ type PostData {
 
 input UserInputData {
   email: String!
-  name: String!
+  name: String
   password: String!
 }
 type GeoLocation {
@@ -139,13 +144,17 @@ input PostInputData {
   itemFavorCount: Int
   itemSecurity: String
 }
+type checkOwner {
+  checklogin: String
+  status: String
+}
 
 type Query {
   allpost: PostData!
   login(email: String!, password: String!): AuthData!
   posts(page: Int): PostData!
   post(id: ID!): Post!
-  checklogin: String!
+  checklogin: checkOwner
 }
 
 type Mutation {
@@ -154,5 +163,6 @@ type Mutation {
   updatePost(id: ID!, postInput: PostInputData, geo: Geo): Post!
   deletePost(id: ID!): Boolean
   updateStatus(status: String!): User!
-  likePost(id: ID!): Boolean
+  likePost(id: ID!): [String]!
+  updateUser(id: ID!, oldpass: String!, newpass: String!): Boolean
 }
