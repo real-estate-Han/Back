@@ -12,7 +12,7 @@ type Post {
   _id: ID!
   itemGeoLocation: GeoLocation
   itemUniqueID: Int!
-  itemLoadAddress: String! #// 도로명주소
+  itemLoadAddress: String #// 도로명주소
   itemAddress: String! #// 지번주소
   region_1depth: String #// 경기도
   region_2depth: String #// 파주시
@@ -60,6 +60,7 @@ type Post {
   itemManagementException: String
   itemFavorCount: Int
   itemSecurity: String
+  itemControlLine: String
   creator: User
   createdAt: String
   updatedAt: String
@@ -95,7 +96,7 @@ input Geo {
 }
 input PostInputData {
   itemUniqueID: Int!
-  itemLoadAddress: String! #// 도로명주소
+  itemLoadAddress: String #// 도로명주소
   itemAddress: String! #// 지번주소
   region_1depth: String #// 경기도
   region_2depth: String #// 파주시
@@ -143,6 +144,7 @@ input PostInputData {
   itemManagementException: String
   itemFavorCount: Int
   itemSecurity: String
+  itemControlLine: String
 }
 type checkOwner {
   checklogin: String

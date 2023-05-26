@@ -12,14 +12,17 @@ export const resolvers = {
   Query: {
     checklogin: async function (_root, {}, req) {
       if (!req.isAuth) {
-        return "failed";
+        if (req.expire) {
+          return { checklogin: "expired" };
+        }
+        return { checklogin: "failed" };
       }
       if (req.isAuth) {
         const user = await User.findById(req.userId);
         if (user.status == "owner") {
           return { checklogin: "success", status: "owner" };
         } else {
-          return "success";
+          return { checklogin: "success" };
         }
       }
     },
@@ -150,7 +153,7 @@ export const resolvers = {
       if (!req.isAuth) {
         throw new GraphQLError("인증 실패");
       }
-      console.log(geo);
+      console.log(postInput);
       const user = await User.findById(req.userId);
       if (!user) {
         throw new GraphQLError("회원을 찾을 수 없습니다");
@@ -202,21 +205,55 @@ export const resolvers = {
       const post = await Post.findById(id).populate("creator");
       if (!post) {
         throw new GraphQLError("게시물을 찾을 수 없습니다");
-        error.code = 404;
-        throw error;
       }
-      if (post.creator._id.toString() !== req.userId.toString()) {
-        const error = new Error("Not authorized!");
-        error.code = 403;
-        throw error;
-      }
+      // post = {
+      //   ...postInput,
+      //   itemGeoLocation: [geo.lat, geo.lng],
+      //   creator: post.creator,
+      // };
 
-      post = {
-        ...postInput,
-        itemGeoLocation: [geo.lat, geo.lng],
-        creator: post.creator,
-      };
-      const updatedPost = await post.save();
+      post.itemUniqueID = postInput.itemUniqueID;
+      post.itemGeoLocation = [geo.lat, geo.lng];
+      post.itemAddress = postInput.itemAddress;
+      post.itemLoadAddress = postInput.itemLoadAddress;
+      post.itemType = postInput.itemType;
+      post.transactionType = postInput.transactionType;
+      post.itemDeposit = postInput.itemDeposit;
+      post.itemMonthly = postInput.itemMonthly;
+      post.itemJense = postInput.itemJense;
+      post.itemSale = postInput.itemSale;
+      post.itemManagement = postInput.itemManagement;
+      post.itemAreaLand = postInput.itemAreaLand;
+      post.itemAreaBuilding = postInput.itemAreaBuilding;
+      post.itemFloor = postInput.itemFloor;
+      post.itemElevator = postInput.itemElevator;
+      post.itemHeating = postInput.itemHeating;
+      post.itemParking = postInput.itemParking;
+      post.itemBalcony = postInput.itemBalcony;
+      post.itemPurpose = postInput.itemPurpose;
+      post.itemRooms = postInput.itemRooms;
+      post.itemStatus = postInput.itemStatus;
+      post.itemLandNumber = postInput.itemLandNumber;
+      post.itemMovein = postInput.itemMovein;
+      post.itemApproval = postInput.itemApproval;
+      post.itemSubway = postInput.itemSubway;
+      post.itemFloorHeight = postInput.itemFloorHeight;
+      post.itemTitleimg = postInput.itemTitleimg;
+      post.itemDetailimg = postInput.itemDetailimg;
+      post.itemTag = postInput.itemTag;
+      post.itemTruck = postInput.itemTruck;
+      post.itemElectricity = postInput.itemElectricity;
+      post.itemOption = postInput.itemOption;
+      post.itemAreaTotal = postInput.itemAreaTotal;
+      post.itemLandType = postInput.itemLandType;
+      post.itemLandNumber = postInput.itemLandNumber;
+      post.region_1depth = postInput.region_1depth;
+      post.region_2depth = postInput.region_2depth;
+      post.region_3depth = postInput.region_3depth;
+      post.itemWaterMark = postInput.itemWaterMark;
+      post.itemMoreInfo = postInput.itemMoreInfo;
+      await post.save();
+      const updatedPost = await Post.findById(id).populate("creator");
       return {
         ...updatedPost._doc,
         _id: updatedPost._id.toString(),

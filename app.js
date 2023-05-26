@@ -28,10 +28,12 @@ function getHttpContext({ req, res, next }) {
   } catch (err) {
     return { isAuth: false };
   }
+
   if (!decodedToken) {
     req.isAuth = false;
     return { isAuth: false };
   }
+
   req.userId = decodedToken.userId;
   req.isAuth = true;
   return { userId: decodedToken.userId, isAuth: true };
@@ -54,8 +56,8 @@ app.use((error, req, res, next) => {
 });
 mongoose
   .connect(DBURL)
-  .then(result => {
+  .then((result) => {
     console.log("Connected to DB!");
     app.listen(8080);
   })
-  .catch(err => console.log(err));
+  .catch((err) => console.log(err));

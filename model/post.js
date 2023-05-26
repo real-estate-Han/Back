@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const postSchema = new Schema(
   {
     itemUniqueID: { type: Number, required: true },
-    itemLoadAddress: { type: String, required: true },
-    itemAddress: { type: String, required: true },
+    itemLoadAddress: { type: String },
+    itemAddress: { type: String },
     region_1depth: { type: String },
     region_2depth: { type: String },
     region_3depth: { type: String },
@@ -53,14 +53,15 @@ const postSchema = new Schema(
     itemManagementException: { type: String },
     itemFavorCount: { type: Number },
     itemSecurity: { type: String },
+    itemControlLine: { type: String },
     creator: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
   },
   { timestamps: true }
 );
 
-const Post = mongoose.model('Post', postSchema);
+const Post = mongoose.model("Post", postSchema);
 export default Post;
