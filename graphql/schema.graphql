@@ -4,8 +4,8 @@ type User {
   email: String!
   password: String
   status: String
-  posts: [Post]!
-  likeposts: [Post]!
+  posts: [Post]
+  likeposts: [Post]
 }
 
 type Post {
@@ -61,6 +61,9 @@ type Post {
   itemFavorCount: Int
   itemSecurity: String
   itemControlLine: String
+  itemTotalFloor: Int
+  itemParkingFee: Int
+  itemCharge: String
   creator: User
   createdAt: String
   updatedAt: String
@@ -69,8 +72,8 @@ type Post {
 type AuthData {
   token: String!
   userId: String!
-  likeposts: [ID]!
-  posts: [ID]!
+  likeposts: [ID]
+  posts: [ID]
   userEmail: String
   userNickname: String
   status: String
@@ -145,6 +148,9 @@ input PostInputData {
   itemFavorCount: Int
   itemSecurity: String
   itemControlLine: String
+  itemTotalFloor: Int
+  itemParkingFee: Int
+  itemCharge: String
 }
 type checkOwner {
   checklogin: String

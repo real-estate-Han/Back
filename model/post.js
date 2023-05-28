@@ -54,6 +54,9 @@ const postSchema = new Schema(
     itemFavorCount: { type: Number },
     itemSecurity: { type: String },
     itemControlLine: { type: String },
+    itemTotalFloor: { type: Number },
+    itemParkingFee: { type: Number },
+    itemCharge: { type: String },
     creator: {
       type: Schema.Types.ObjectId,
       ref: "User",

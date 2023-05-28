@@ -258,6 +258,9 @@ export const resolvers = {
         itemFavorCount,
         itemSecurity,
         itemControlLine,
+        itemTotalFloor,
+        itemParkginFee,
+        itemCharge,
       } = postInput;
       const update = await Post.findByIdAndUpdate(
         id,
@@ -314,6 +317,9 @@ export const resolvers = {
             itemFavorCount,
             itemSecurity,
             itemControlLine,
+            itemTotalFloor,
+            itemParkginFee,
+            itemCharge,
           },
         },
         { new: true }
