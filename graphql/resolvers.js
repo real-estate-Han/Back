@@ -206,53 +206,119 @@ export const resolvers = {
       if (!post) {
         throw new GraphQLError("게시물을 찾을 수 없습니다");
       }
-      // post = {
-      //   ...postInput,
-      //   itemGeoLocation: [geo.lat, geo.lng],
-      //   creator: post.creator,
-      // };
 
-      post.itemUniqueID = postInput.itemUniqueID;
-      post.itemGeoLocation = [geo.lat, geo.lng];
-      post.itemAddress = postInput.itemAddress;
-      post.itemLoadAddress = postInput.itemLoadAddress;
-      post.itemType = postInput.itemType;
-      post.transactionType = postInput.transactionType;
-      post.itemDeposit = postInput.itemDeposit;
-      post.itemMonthly = postInput.itemMonthly;
-      post.itemJense = postInput.itemJense;
-      post.itemSale = postInput.itemSale;
-      post.itemManagement = postInput.itemManagement;
-      post.itemAreaLand = postInput.itemAreaLand;
-      post.itemAreaBuilding = postInput.itemAreaBuilding;
-      post.itemFloor = postInput.itemFloor;
-      post.itemElevator = postInput.itemElevator;
-      post.itemHeating = postInput.itemHeating;
-      post.itemParking = postInput.itemParking;
-      post.itemBalcony = postInput.itemBalcony;
-      post.itemPurpose = postInput.itemPurpose;
-      post.itemRooms = postInput.itemRooms;
-      post.itemStatus = postInput.itemStatus;
-      post.itemLandNumber = postInput.itemLandNumber;
-      post.itemMovein = postInput.itemMovein;
-      post.itemApproval = postInput.itemApproval;
-      post.itemSubway = postInput.itemSubway;
-      post.itemFloorHeight = postInput.itemFloorHeight;
-      post.itemTitleimg = postInput.itemTitleimg;
-      post.itemDetailimg = postInput.itemDetailimg;
-      post.itemTag = postInput.itemTag;
-      post.itemTruck = postInput.itemTruck;
-      post.itemElectricity = postInput.itemElectricity;
-      post.itemOption = postInput.itemOption;
-      post.itemAreaTotal = postInput.itemAreaTotal;
-      post.itemLandType = postInput.itemLandType;
-      post.itemLandNumber = postInput.itemLandNumber;
-      post.region_1depth = postInput.region_1depth;
-      post.region_2depth = postInput.region_2depth;
-      post.region_3depth = postInput.region_3depth;
-      post.itemWaterMark = postInput.itemWaterMark;
-      post.itemMoreInfo = postInput.itemMoreInfo;
-      await post.save();
+      const {
+        itemUniqueID,
+        itemLoadAddress,
+        itemAddress,
+        region_1depth,
+        region_2depth,
+        region_3depth,
+        itemType,
+        transactionType,
+        itemDeposit,
+        itemMonthly,
+        itemJense,
+        itemSale,
+        itemManagement,
+        itemParking,
+        itemElevator,
+        itemHeating,
+        itemBalcony,
+        itemDirection,
+        itemAreaLand,
+        itemAreaBuilding,
+        itemSupplyArea,
+        itemExclusiveArea,
+        itemFloor,
+        itemLandType,
+        itemFloorHeight,
+        itemPurpose,
+        itemRooms,
+        itemBathroom,
+        itemStatus,
+        itemTruck,
+        itemLandNumber,
+        itemAreaTotal,
+        itemLandCategory,
+        itemTotalAreaLand,
+        itemMovein,
+        itemApproval,
+        itemSubway,
+        itemTitleimg,
+        itemDetailimg,
+        itemTag,
+        itemElectricity,
+        itemOption,
+        itemLoan,
+        itemWaterMark,
+        itemMoreInfo,
+        itemManagementInfo,
+        itemManagementException,
+        itemFavorCount,
+        itemSecurity,
+        itemControlLine,
+      } = postInput;
+      const update = await Post.findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            itemUniqueID,
+            itemGeoLocation: [geo.lat, geo.lng],
+            itemLoadAddress,
+            itemAddress,
+            region_1depth,
+            region_2depth,
+            region_3depth,
+            itemType,
+            transactionType,
+            itemDeposit,
+            itemMonthly,
+            itemJense,
+            itemSale,
+            itemManagement,
+            itemParking,
+            itemElevator,
+            itemHeating,
+            itemBalcony,
+            itemDirection,
+            itemAreaLand,
+            itemAreaBuilding,
+            itemSupplyArea,
+            itemExclusiveArea,
+            itemFloor,
+            itemLandType,
+            itemFloorHeight,
+            itemPurpose,
+            itemRooms,
+            itemBathroom,
+            itemStatus,
+            itemTruck,
+            itemLandNumber,
+            itemAreaTotal,
+            itemLandCategory,
+            itemTotalAreaLand,
+            itemMovein,
+            itemApproval,
+            itemSubway,
+            itemTitleimg,
+            itemDetailimg,
+            itemTag,
+            itemElectricity,
+            itemOption,
+            itemLoan,
+            itemWaterMark,
+            itemMoreInfo,
+            itemManagementInfo,
+            itemManagementException,
+            itemFavorCount,
+            itemSecurity,
+            itemControlLine,
+          },
+        },
+        { new: true }
+      );
+
       const updatedPost = await Post.findById(id).populate("creator");
       return {
         ...updatedPost._doc,
