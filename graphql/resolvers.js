@@ -48,7 +48,7 @@ export const resolvers = {
     login: async function (_root, { email, password }) {
       const user = await User.findOne({ email: email });
       if (!user) {
-        throw new GraphQLError("회원을 찾을 수 없습니다", {
+        throw new GraphQLError("아이디 혹은 비밀번호가 틀립니다.", {
           extensions: {
             code: 401,
           },
@@ -56,7 +56,7 @@ export const resolvers = {
       }
       const isEqual = await bcrypt.compare(password, user.password);
       if (!isEqual) {
-        throw new GraphQLError("비밀번호가 틀렸습니다");
+        throw new GraphQLError("아이디 혹은 비밀번호가 틀립니다.");
       }
       const token = jwt.sign(
         {
