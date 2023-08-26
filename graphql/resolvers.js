@@ -360,6 +360,13 @@ export const resolvers = {
       await post.save();
       return user.likeposts;
     },
+    viewPost: async (_root, { id }, req) => {
+      const post = await Post.findById(id);
+      user.likeposts.push(id);
+      post.itemView += 1;
+      await post.save();
+      return post.itemView;
+    },
     updateUser: async (_root, { userid, oldpass, newpass }, req) => {
       const user = await User.findById(userid);
 

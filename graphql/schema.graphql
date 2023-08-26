@@ -64,6 +64,7 @@ type Post {
   itemTotalFloor: Int
   itemParkingFee: Int
   itemCharge: String
+  itemView: Int
   creator: User
   createdAt: String
   updatedAt: String
@@ -172,5 +173,6 @@ type Mutation {
   deletePost(id: ID!): Boolean
   updateStatus(status: String!): User!
   likePost(id: ID!): [String]!
+  viewPost(id: ID!): Int
   updateUser(id: ID!, oldpass: String!, newpass: String!): Boolean
 }
