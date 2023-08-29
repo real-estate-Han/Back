@@ -60,6 +60,6 @@ mongoose
   .connect(DBURL)
   .then((result) => {
     console.log("Connected to DB!");
-    app.listen(8081);
+    app.listen(8080);
   })
   .catch((err) => console.log(err));
