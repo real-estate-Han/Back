@@ -162,6 +162,7 @@ export const resolvers = {
         ...postInput,
         itemGeoLocation: [geo.lat, geo.lng],
         creator: user,
+        itemView: 0,
       });
       const createdPost = await post.save();
       user.posts.push(createdPost);
@@ -175,6 +176,7 @@ export const resolvers = {
         _id: createdPost._id.toString(),
         createdAt: createdPost.createdAt.toISOString(),
         updatedAt: createdPost.updatedAt.toISOString(),
+        itemView: 0,
       };
     },
 
@@ -362,7 +364,7 @@ export const resolvers = {
     },
     viewPost: async (_root, { id }, req) => {
       const post = await Post.findById(id);
-      user.likeposts.push(id);
+
       post.itemView += 1;
       await post.save();
       return post.itemView;

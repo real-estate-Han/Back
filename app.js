@@ -44,6 +44,7 @@ const typeDefs = await readFile("./graphql/schema.graphql", "utf-8");
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 const apolloServer = new ApolloServer({ schema });
 await apolloServer.start();
+
 app.use("/graphql", apolloExpress(apolloServer, { context: getHttpContext }));
 const DBURL = process.env.DB_URL;
 
@@ -54,10 +55,11 @@ app.use((error, req, res, next) => {
   console.log(message);
   res.status(status).json({ message: message, data: data });
 });
+
 mongoose
   .connect(DBURL)
   .then((result) => {
     console.log("Connected to DB!");
-    app.listen(8080);
+    app.listen(8081);
   })
   .catch((err) => console.log(err));
